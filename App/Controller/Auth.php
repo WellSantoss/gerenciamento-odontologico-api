@@ -34,7 +34,9 @@ class Auth {
     return $token;
   }
 
-  public static function checkAuth() {
+  public static function checkAuth($method) {
+    if ($method == 'login') return true;
+    
     $http_header = apache_request_headers();
 
     if (isset($http_header['Authorization']) && $http_header['Authorization'] != null) {

@@ -98,7 +98,7 @@ class Usuario {
         $cargo = $row["administrador"] == '1' ? $row["administrador"] : self::getCargo($row["id"]);
         $token = Auth::generateToken($row["nome"], $row["usuario"]);
 
-        return array("nome" => $row["nome"], "cargo" => $cargo, "foto" => $row["foto"], "token" => $token);
+        return array("usuario" => array("id" => $row["id"], "nome" => $row["nome"], "cargo" => $cargo, "foto" => $row["foto"]), "token" => $token);
       }
       else {
         throw new \Exception("Senha incorreta.");

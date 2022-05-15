@@ -17,7 +17,7 @@ class UsuarioController {
   }
 
   public function login() {
-    return Usuario::login($_POST);
+    return Usuario::login((array) json_decode(file_get_contents('php://input')));
   }
 
   public function update() {
