@@ -16,7 +16,7 @@ class UsuarioController {
     return Usuario::sendUsuario($_POST);
   }
 
-  public function login() {
+  public static function login() {
     return Usuario::login((array) json_decode(file_get_contents('php://input')));
   }
 

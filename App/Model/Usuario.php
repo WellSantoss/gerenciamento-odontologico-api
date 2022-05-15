@@ -1,6 +1,6 @@
 <?php
 namespace App\Model;
-use App\Controller\Auth;
+use App\Controller\AuthController;
 
 class Usuario {
   public static function getUsuario(int $id) {
@@ -95,10 +95,9 @@ class Usuario {
       $hash = $row["senha"];
 
       if (password_verify($senha, $hash)) {
-        $cargo = $row["administrador"] == '1' ? $row["administrador"] : self::getCargo($row["id"]);
-        $token = Auth::generateToken($row["nome"], $row["usuario"]);
+        $token = AuthController::gerarToken($row["id"], $row["usuario"]);
 
-        return array("usuario" => array("id" => $row["id"], "nome" => $row["nome"], "cargo" => $cargo, "foto" => $row["foto"]), "token" => $token);
+        return array("usuario" => array("id" => $row["id"], "nome" => $row["nome"], "administrador" => (bool) $row["administrador"], "dentista" => (bool) self::usuarioDentista($row["id"]), "foto" => $row["foto"]), "token" => $token);
       }
       else {
         throw new \Exception("Senha incorreta.");
@@ -111,7 +110,23 @@ class Usuario {
     }
   }
 
-  public static function getCargo(int $id_usuario) {
+  public static function getUsuarioAutenticado($id) {
+    $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+    $sql = 'SELECT administrador, nome, foto FROM usuarios WHERE id = :id';
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':id', $id);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+      
+      return array("id" => $id, "nome" => $row["nome"], "administrador" => (bool) $row["administrador"], "dentista" => (bool) self::usuarioDentista($id), "foto" => $row["foto"]);
+    }
+    
+    return false;
+  }
+
+  public static function usuarioDentista(int $id_usuario) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
     $sql = 'SELECT id FROM dentistas WHERE id_usuario = :id_usuario';
     $stmt = $conn->prepare($sql);
@@ -119,10 +134,9 @@ class Usuario {
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-      return '2';
+      return true;
     }
-    else {
-      return '3';
-    }
+
+    return false;
   }
 }
