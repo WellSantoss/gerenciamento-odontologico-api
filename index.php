@@ -1,17 +1,16 @@
 <?php
-header('Content-Type: aplication/json');
+header('Content-Type: application/json');
 require_once 'vendor/autoload.php';
+use App\Controller\Auth;
 
-if ($_GET['url']) {
-  $method = strtolower($_SERVER['REQUEST_METHOD']);
+if ($_GET['url'] && Auth::checkAuth()) {
   $url = explode('/', $_GET['url']);
-  array_shift($url);
-  
-  $service = 'App\Service\\'.ucfirst($url[0]).'Service';
-  array_shift($url);
+  $controller = 'App\Controller\\'.ucfirst($url[1]).'Controller';
+  $method = strtolower($url[2]);
+  $param = array_slice($url, 3);
 
   try {
-    $response = call_user_func_array(array(new $service, $method), $url);
+    $response = call_user_func_array(array(new $controller, $method), $param);
 
     http_response_code(200);
     echo json_encode(array('status' => 'success', 'data' => $response), JSON_UNESCAPED_UNICODE);
@@ -19,4 +18,8 @@ if ($_GET['url']) {
     http_response_code(404);
     echo json_encode(array('status' => 'error', 'data' => $e->getMessage()), JSON_UNESCAPED_UNICODE);
   }
+}
+else {
+  http_response_code(404);
+  echo json_encode(array('status' => 'error', 'data' => 'Não autenticado.'), JSON_UNESCAPED_UNICODE);
 }

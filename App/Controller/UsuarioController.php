@@ -1,8 +1,8 @@
 <?php
-namespace App\Service;
+namespace App\Controller;
 use App\Model\Usuario;
 
-class UsuarioService {
+class UsuarioController {
   public function get($id = null) {
     if ($id) {
       return Usuario::getUsuario($id);
@@ -12,8 +12,12 @@ class UsuarioService {
     }
   }
 
-  public function post() {
+  public function send() {
+    return Usuario::sendUsuario($_POST);
+  }
 
+  public function login() {
+    return Usuario::login($_POST);
   }
 
   public function update() {
