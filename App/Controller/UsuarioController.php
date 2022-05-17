@@ -21,10 +21,15 @@ class UsuarioController {
   }
 
   public function update() {
-
+    return $_POST;
   }
 
-  public function delete() {
-
+  public function delete($id) {
+    if ($id) {
+      return Usuario::deleteUsuario($id);
+    }
+    else {
+      throw new \Exception("Selecione um usuário para excluir.");
+    }
   }
 }

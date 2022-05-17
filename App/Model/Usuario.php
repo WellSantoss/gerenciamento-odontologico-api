@@ -20,7 +20,7 @@ class Usuario {
 
   public static function getUsuarios() {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
-    $sql = 'SELECT ativo, administrador, nome, foto, usuario FROM usuarios';
+    $sql = 'SELECT id, ativo, administrador, nome, foto, usuario FROM usuarios';
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -30,6 +30,25 @@ class Usuario {
     else {
       throw new \Exception("Nenhum usuário encontrado.");
     }
+  }
+
+  public static function deleteUsuario(int $id) {
+    $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+    $sql = 'DELETE FROM usuarios WHERE id = :id';
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':id', $id);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return "Usuário excluído com sucesso.";
+    }
+    else {
+      throw new \Exception("Erro ao excluir o usuário.");
+    }
+  }
+
+  public static function updateUsuario() {
+    
   }
 
   public static function sendUsuario(array $data) {
