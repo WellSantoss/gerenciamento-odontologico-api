@@ -47,8 +47,67 @@ class Usuario {
     }
   }
 
-  public static function updateUsuario() {
-    
+  public static function updateUsuario(array $data, int $id) {
+    $fileName = $_FILES['foto']['name'];
+    $tempPath = $_FILES['foto']['tmp_name'];
+    $fileSize = $_FILES['foto']['size'];
+        
+    if (!empty($fileName)) {
+      $fileName = date("d_m_y_h_i_s", time()) . $fileName;
+      $upload_path = 'upload/';
+      $fileExt = strtolower(pathinfo($fileName,PATHINFO_EXTENSION));
+      $valid_extensions = array('jpeg', 'jpg', 'png', 'gif');
+
+      if (in_array($fileExt, $valid_extensions)) {				
+        if ($fileSize < 5000000) { // até '5MB'
+          if (!move_uploaded_file($tempPath, $upload_path . $fileName)) {
+            throw new \Exception("Erro ao fazer upload da imagem, tente novamente.");
+          }
+        }
+        else {		
+          throw new \Exception("Selecione uma imagem de até 5MB.");
+        }
+      }
+      else {		
+        throw new \Exception("Tipo de arquivo não aceito. Selecione um arquivo com uma das extensões a seguir: jpeg, jpg, png, gif");
+      }
+
+      $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+      $sql = 'UPDATE usuarios SET ativo = :ativo, administrador = :administrador, foto = :foto, nome = :nome, usuario = :usuario WHERE id = :id';
+      $stmt = $conn->prepare($sql);
+      $stmt->bindValue(':ativo', $data['ativo']);
+      $stmt->bindValue(':administrador', $data['administrador']);
+      $stmt->bindValue(':foto', $fileName);
+      $stmt->bindValue(':nome', $data['nome']);
+      $stmt->bindValue(':usuario', $data['usuario']);
+      $stmt->bindValue(':id', $id);
+      $stmt->execute();
+
+      if ($stmt->rowCount() > 0) {
+        return 'Usuário atualizado com sucesso.';
+      }
+      else {
+        throw new \Exception("Erro ao atualizar usuário.");
+      }
+    }
+    else {
+      $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+      $sql = 'UPDATE usuarios SET ativo = :ativo, administrador = :administrador, nome = :nome, usuario = :usuario WHERE id = :id';
+      $stmt = $conn->prepare($sql);
+      $stmt->bindValue(':ativo', $data['ativo']);
+      $stmt->bindValue(':administrador', $data['administrador']);
+      $stmt->bindValue(':nome', $data['nome']);
+      $stmt->bindValue(':usuario', $data['usuario']);
+      $stmt->bindValue(':id', $id);
+      $stmt->execute();
+
+      if ($stmt->rowCount() > 0) {
+        return 'Usuário atualizado com sucesso.';
+      }
+      else {
+        throw new \Exception("Erro ao atualizar usuário.");
+      }
+    }
   }
 
   public static function sendUsuario(array $data) {

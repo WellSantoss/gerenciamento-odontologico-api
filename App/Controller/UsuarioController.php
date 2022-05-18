@@ -20,8 +20,8 @@ class UsuarioController {
     return Usuario::login((array) json_decode(file_get_contents('php://input')));
   }
 
-  public function update() {
-    return $_POST;
+  public function update($id) {
+    return Usuario::updateUsuario($_POST, $id);
   }
 
   public function delete($id) {
