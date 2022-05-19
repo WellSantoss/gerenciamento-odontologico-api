@@ -18,10 +18,19 @@ class Usuario {
     }
   }
 
-  public static function getUsuarios() {
+  public static function getUsuarios($param = null) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
-    $sql = 'SELECT id, ativo, administrador, nome, foto, usuario FROM usuarios';
-    $stmt = $conn->prepare($sql);
+
+    if ($param) {
+      $sql = 'SELECT id, ativo, administrador, nome, foto, usuario FROM usuarios WHERE nome LIKE :param OR usuario LIKE :param';
+      $stmt = $conn->prepare($sql);
+      $stmt->bindValue(':param', '%'. $param .'%');
+    }
+    else {
+      $sql = 'SELECT id, ativo, administrador, nome, foto, usuario FROM usuarios';
+      $stmt = $conn->prepare($sql);
+    }
+    
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {

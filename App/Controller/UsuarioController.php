@@ -3,9 +3,14 @@ namespace App\Controller;
 use App\Model\Usuario;
 
 class UsuarioController {
-  public function get($id = null) {
-    if ($id) {
-      return Usuario::getUsuario($id);
+  public function get($param = null) {
+    if ($param) {
+      if (gettype($param) == 'integer') {
+        return Usuario::getUsuario($param);
+      }
+      else {
+        return Usuario::getUsuarios($param);
+      }
     }
     else {
       return Usuario::getUsuarios();
