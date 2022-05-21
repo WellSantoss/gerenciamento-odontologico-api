@@ -75,6 +75,22 @@ class Produto {
     }
   }
 
+  public static function updateEstoque(int $id, int $quantidade) {
+    $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+    $sql = 'UPDATE produtos SET estoque = estoque + :quantidade WHERE id = :id';
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':quantidade', $quantidade);
+    $stmt->bindValue(':id', $id);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   public static function reporProduto(array $data, int $id) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
     $sql = 'SELECT nome, valor_unitario, estoque FROM produtos WHERE id = :id';
