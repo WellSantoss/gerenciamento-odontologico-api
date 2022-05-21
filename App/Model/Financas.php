@@ -15,7 +15,7 @@ class Financas {
       
     }
     else {
-      $sql = 'SELECT f.id, u.nome AS usuario, f.operacao, f.tipo, f.valor, f.data, f.descricao FROM financas f INNER JOIN usuarios u ON f.id_usuario = u.id';
+      $sql = 'SELECT f.id, u.nome AS usuario, f.operacao, f.tipo, f.valor, f.data, f.descricao FROM financas f INNER JOIN usuarios u ON f.id_usuario = u.id ORDER BY data DESC';
       $stmt = $conn->prepare($sql);
     }
     
