@@ -6,12 +6,12 @@ class Dentista {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
 
     if ($param) {
-      $sql = 'SELECT d.*, u.usuario FROM dentistas d LEFT JOIN usuarios u ON d.id_usuario = u.id WHERE d.nome LIKE :param OR u.usuario LIKE :param OR d.cpf LIKE :param OR d.inscricao LIKE :param ORDER BY d.id DESC';
+      $sql = 'SELECT d.*, u.usuario, u.foto FROM dentistas d LEFT JOIN usuarios u ON d.id_usuario = u.id WHERE d.nome LIKE :param OR u.usuario LIKE :param OR d.cpf LIKE :param OR d.inscricao LIKE :param ORDER BY d.id DESC';
       $stmt = $conn->prepare($sql);
       $stmt->bindValue(':param', '%'. $param .'%');
     }
     else {
-      $sql = 'SELECT d.*, u.usuario FROM dentistas d LEFT JOIN usuarios u ON d.id_usuario = u.id ORDER BY d.id DESC';
+      $sql = 'SELECT d.*, u.usuario, u.foto FROM dentistas d LEFT JOIN usuarios u ON d.id_usuario = u.id ORDER BY d.id DESC';
       $stmt = $conn->prepare($sql);
     }
     
