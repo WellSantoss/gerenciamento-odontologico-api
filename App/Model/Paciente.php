@@ -2,18 +2,23 @@
 namespace App\Model;
 
 class Paciente {
-  public static function getObsPaciente(int $id) {
+  public static function getPaciente(int $id) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
-    $sql = 'SELECT queixa_atual, medicacoes, alergias, doencas, cirurgias, tipo_sangramento, tipo_cicatrizacao, falta_de_ar, gestante, observacoes FROM pacientes WHERE id = :id';
+    $sql = 'SELECT p.*, c.nome AS convenio FROM pacientes p LEFT JOIN convenios c ON p.id_convenio = c.id WHERE p.id = :id';
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':id', $id);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-      return $stmt->fetch(\PDO::FETCH_ASSOC);
+      $paciente = $stmt->fetch(\PDO::FETCH_ASSOC);
+      $infos = array('id' => $paciente['id'], 'id_convenio' => $paciente['id_convenio'], 'convenio' => $paciente['convenio'], 'nome' => $paciente['nome'], 'cpf' => $paciente['cpf'], 'data_nascimento' => $paciente['data_nascimento'], 'telefone' => $paciente['telefone'], 'cep' => $paciente['cep'], 'rua' => $paciente['rua'], 'numero' => $paciente['numero'], 'bairro' => $paciente['bairro'], 'cidade' => $paciente['cidade'], 'estado' => $paciente['estado']);
+
+      $obs = array('queixa_atual' => $paciente['queixa_atual'], 'medicacoes' => $paciente['medicacoes'], 'alergias' => $paciente['alergias'], 'doencas' => $paciente['doencas'], 'cirurgias' => $paciente['cirurgias'], 'tipo_sangramento' => $paciente['tipo_sangramento'], 'tipo_cicatrizacao' => $paciente['tipo_cicatrizacao'], 'falta_de_ar' => $paciente['falta_de_ar'], 'gestante' => $paciente['gestante'], 'observacoes' => $paciente['observacoes']);
+
+      return array('infos' => $infos, 'obs' => $obs);
     }
     else {
-      throw new \Exception("Não foi possível obter as informações do paciente.");
+      throw new \Exception("Paciente não encontrado.");
     }
   }
 
@@ -21,12 +26,12 @@ class Paciente {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
 
     if ($param) {
-      $sql = 'SELECT p.id, p.id_convenio, p.cpf, p.nome, p.data_nascimento, p.telefone, p.cep, p.rua, p.numero, p.bairro, p.cidade, p.estado, c.nome AS convenio FROM pacientes p LEFT JOIN convenios c ON p.id_convenio = c.id WHERE p.nome LIKE :param OR c.nome LIKE :param OR p.cpf LIKE :param';
+      $sql = 'SELECT p.id, p.id_convenio, p.cpf, p.nome, p.data_nascimento, p.telefone, p.cep, p.rua, p.numero, p.bairro, p.cidade, p.estado, c.nome AS convenio FROM pacientes p LEFT JOIN convenios c ON p.id_convenio = c.id WHERE p.nome LIKE :param OR c.nome LIKE :param OR p.cpf LIKE :param ORDER BY p.id DESC';
       $stmt = $conn->prepare($sql);
       $stmt->bindValue(':param', '%'. $param .'%');
     }
     else {
-      $sql = 'SELECT p.id, p.id_convenio, p.cpf, p.nome, p.data_nascimento, p.telefone, p.cep, p.rua, p.numero, p.bairro, p.cidade, p.estado, c.nome AS convenio FROM pacientes p LEFT JOIN convenios c ON p.id_convenio = c.id';
+      $sql = 'SELECT p.id, p.id_convenio, p.cpf, p.nome, p.data_nascimento, p.telefone, p.cep, p.rua, p.numero, p.bairro, p.cidade, p.estado, c.nome AS convenio FROM pacientes p LEFT JOIN convenios c ON p.id_convenio = c.id ORDER BY p.id DESC';
       $stmt = $conn->prepare($sql);
     }
     
@@ -124,7 +129,18 @@ class Paciente {
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-      return 'Paciente cadastrado com sucesso.';
+      $sql2 = 'SELECT id FROM pacientes ORDER BY id DESC LIMIT 1';
+      $stmt2 = $conn->prepare($sql2);
+      $stmt2->execute();
+  
+      if ($stmt2->rowCount() > 0) {
+        $row = $stmt2->fetch(\PDO::FETCH_ASSOC);
+
+        return array('id' => $row['id'], 'msg' => 'Paciente cadastrado com sucesso.');
+      }
+      else {
+        return 'Paciente cadastrado com sucesso.';
+      }
     }
     else {
       throw new \Exception("Erro ao cadastrar paciente.");
