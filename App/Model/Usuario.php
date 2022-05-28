@@ -3,15 +3,23 @@ namespace App\Model;
 use App\Controller\AuthController;
 
 class Usuario {
-  public static function getUsuario(int $id) {
+  public static function getUsuariosDisponiveis(int $id = null) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
-    $sql = 'SELECT ativo, administrador, nome, foto, usuario FROM usuarios WHERE id = :id';
-    $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id', $id);
+
+    if ($id) {
+      $sql = 'SELECT u.id, u.nome, u.usuario FROM usuarios u LEFT JOIN dentistas d ON d.id_usuario = u.id WHERE d.id IS NULL OR d.id = :id';
+      $stmt = $conn->prepare($sql);
+      $stmt->bindValue(':id', $id);
+    }
+    else {
+      $sql = 'SELECT u.id, u.nome, u.usuario FROM usuarios u LEFT JOIN dentistas d ON d.id_usuario = u.id WHERE d.id IS NULL';
+      $stmt = $conn->prepare($sql);
+    }
+
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-      return $stmt->fetch(\PDO::FETCH_ASSOC);
+      return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     else {
       throw new \Exception("Usuário não encontrado.");
