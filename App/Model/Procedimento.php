@@ -60,7 +60,7 @@ class Procedimento {
     $sql = 'UPDATE procedimentos SET ativo = :ativo, id_especialidade = :id_especialidade, procedimento = :procedimento, descricao = :descricao, tempo = :tempo, valor = :valor WHERE id = :id';
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':ativo', $data['ativo']);
-    $stmt->bindValue(':id_especialidade', $data['especialidade']);
+    $stmt->bindValue(':id_especialidade', $data['especialidade'] != '' ? $data['especialidade'] : null);
     $stmt->bindValue(':procedimento', $data['procedimento']);
     $stmt->bindValue(':descricao', $data['descricao']);
     $stmt->bindValue(':tempo', $data['tempo']);
@@ -77,11 +77,15 @@ class Procedimento {
   }
 
   public static function sendProcedimento(array $data) {
+    // $especialidade = ;
+
+
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
     $sql = 'INSERT INTO procedimentos (ativo, id_especialidade, procedimento, descricao, tempo, valor) VALUES (:ativo, :id_especialidade, :procedimento, :descricao, :tempo, :valor)';
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':ativo', $data['ativo']);
-    $stmt->bindValue(':id_especialidade', $data['especialidade']);
+    
+    $stmt->bindValue(':id_especialidade', $data['especialidade'] != '' ? $data['especialidade'] : null);
     $stmt->bindValue(':procedimento', $data['procedimento']);
     $stmt->bindValue(':descricao', $data['descricao']);
     $stmt->bindValue(':tempo', $data['tempo']);

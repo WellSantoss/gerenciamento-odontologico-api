@@ -64,7 +64,7 @@ class Paciente {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
     $sql = 'UPDATE pacientes SET id_convenio = :id_convenio, cpf = :cpf, nome = :nome, data_nascimento = :data_nascimento, telefone = :telefone, cep = :cep, rua = :rua, numero = :numero, bairro = :bairro, cidade = :cidade, estado = :estado WHERE id = :id';
     $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id_convenio', $data['id_convenio']);
+    $stmt->bindValue(':id_convenio', $data['id_convenio'] != '' ? $data['id_convenio'] : null);
     $stmt->bindValue(':cpf', $data['cpf']);
     $stmt->bindValue(':nome', $data['nome']);
     $stmt->bindValue(':data_nascimento', $data['data_nascimento']);
@@ -115,7 +115,7 @@ class Paciente {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
     $sql = 'INSERT INTO pacientes (id_convenio, cpf, nome, data_nascimento, telefone, cep, rua, numero, bairro, cidade, estado) VALUES (:id_convenio, :cpf, :nome, :data_nascimento, :telefone, :cep, :rua, :numero, :bairro, :cidade, :estado)';
     $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id_convenio', $data['id_convenio']);
+    $stmt->bindValue(':id_convenio', $data['id_convenio'] != '' ? $data['id_convenio'] : null);
     $stmt->bindValue(':cpf', $data['cpf']);
     $stmt->bindValue(':nome', $data['nome']);
     $stmt->bindValue(':data_nascimento', $data['data_nascimento']);

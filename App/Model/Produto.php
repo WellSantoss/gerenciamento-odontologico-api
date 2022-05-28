@@ -63,7 +63,7 @@ class Produto {
     $stmt->bindValue(':nome', $data['nome']);
     $stmt->bindValue(':estoque', $data['estoque']);
     $stmt->bindValue(':valor_unitario', $data['valor_unitario']);
-    $stmt->bindValue(':id_fornecedor', $data['id_fornecedor']);
+    $stmt->bindValue(':id_fornecedor', $data['id_fornecedor'] != '' ? $data['id_fornecedor'] : null);
     $stmt->bindValue(':id', $id);
     $stmt->execute();
 
@@ -145,7 +145,7 @@ class Produto {
     $stmt->bindValue(':nome', $data['nome']);
     $stmt->bindValue(':estoque', $data['estoque']);
     $stmt->bindValue(':valor_unitario', $data['valor']);
-    $stmt->bindValue(':id_fornecedor', $data['fornecedor']);
+    $stmt->bindValue(':id_fornecedor', $data['fornecedor'] != '' ? $data['fornecedor'] : null);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
