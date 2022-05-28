@@ -4,7 +4,7 @@ namespace App\Model;
 class Cobertura {
   public static function getCoberturas(int $id_convenio) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
-    $sql = 'SELECT cp.id, p.procedimento, cp.porcentagem FROM convenios_procedimentos cp INNER JOIN procedimentos p ON cp.id_procedimento = p.id WHERE cp.id_convenio = :id_convenio';
+    $sql = 'SELECT cp.id, p.procedimento, cp.porcentagem FROM convenios_procedimentos cp LEFT JOIN procedimentos p ON cp.id_procedimento = p.id WHERE cp.id_convenio = :id_convenio';
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':id_convenio', $id_convenio);
     $stmt->execute();

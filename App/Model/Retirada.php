@@ -7,12 +7,12 @@ class Retirada {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
 
     if ($param) {
-      $sql = 'SELECT pu.id, p.nome AS produto, u.nome AS usuario, pu.quantidade, pu.data FROM produtos_utilizados pu INNER JOIN produtos p ON pu.id_produto = p.id INNER JOIN usuarios u ON pu.id_usuario = u.id WHERE p.nome LIKE :param OR u.nome LIKE :param ORDER BY data DESC';
+      $sql = 'SELECT pu.id, p.nome AS produto, u.nome AS usuario, pu.quantidade, pu.data FROM produtos_utilizados pu LEFT JOIN produtos p ON pu.id_produto = p.id LEFT JOIN usuarios u ON pu.id_usuario = u.id WHERE p.nome LIKE :param OR u.nome LIKE :param ORDER BY data DESC';
       $stmt = $conn->prepare($sql);
       $stmt->bindValue(':param', '%'. $param .'%');
     }
     else {
-      $sql = 'SELECT pu.id, p.nome AS produto, u.nome AS usuario, pu.quantidade, pu.data FROM produtos_utilizados pu INNER JOIN produtos p ON pu.id_produto = p.id INNER JOIN usuarios u ON pu.id_usuario = u.id ORDER BY data DESC';
+      $sql = 'SELECT pu.id, p.nome AS produto, u.nome AS usuario, pu.quantidade, pu.data FROM produtos_utilizados pu LEFT JOIN produtos p ON pu.id_produto = p.id LEFT JOIN usuarios u ON pu.id_usuario = u.id ORDER BY data DESC';
       $stmt = $conn->prepare($sql);
     }
     

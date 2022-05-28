@@ -4,7 +4,7 @@ namespace App\Model;
 class Procedimento {
   public static function getProcedimento(int $id) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
-    $sql = 'SELECT p.ativo, p.id_especialidade, e.nome AS especialidade, p.procedimento, p.descricao, p.tempo, p.valor FROM procedimentos p INNER JOIN especialidades e ON p.id_especialidade = e.id WHERE id = :id';
+    $sql = 'SELECT p.ativo, p.id_especialidade, e.nome AS especialidade, p.procedimento, p.descricao, p.tempo, p.valor FROM procedimentos p LEFT JOIN especialidades e ON p.id_especialidade = e.id WHERE id = :id';
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':id', $id);
     $stmt->execute();
@@ -21,12 +21,12 @@ class Procedimento {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
 
     if ($param) {
-      $sql = 'SELECT p.id, p.ativo, p.id_especialidade, e.nome AS especialidade, p.procedimento, p.descricao, p.tempo, p.valor FROM procedimentos p INNER JOIN especialidades e ON p.id_especialidade = e.id WHERE e.nome LIKE :param OR p.procedimento LIKE :param OR p.descricao LIKE :param';
+      $sql = 'SELECT p.id, p.ativo, p.id_especialidade, e.nome AS especialidade, p.procedimento, p.descricao, p.tempo, p.valor FROM procedimentos p LEFT JOIN especialidades e ON p.id_especialidade = e.id WHERE e.nome LIKE :param OR p.procedimento LIKE :param OR p.descricao LIKE :param';
       $stmt = $conn->prepare($sql);
       $stmt->bindValue(':param', '%'. $param .'%');
     }
     else {
-      $sql = 'SELECT p.id, p.ativo, p.id_especialidade, e.nome AS especialidade, p.procedimento, p.descricao, p.tempo, p.valor FROM procedimentos p INNER JOIN especialidades e ON p.id_especialidade = e.id';
+      $sql = 'SELECT p.id, p.ativo, p.id_especialidade, e.nome AS especialidade, p.procedimento, p.descricao, p.tempo, p.valor FROM procedimentos p LEFT JOIN especialidades e ON p.id_especialidade = e.id';
       $stmt = $conn->prepare($sql);
     }
     

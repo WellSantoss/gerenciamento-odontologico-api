@@ -5,7 +5,7 @@ use App\Model\Financas;
 class Produto {
   public static function getProduto(int $id) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
-    $sql = 'SELECT p.id, p.nome, p.estoque, p.valor_unitario, p.id_fornecedor f.nome AS fornecedor FROM produtos p INNER JOIN fornecedores f ON p.id_fornecedor = f.id WHERE p.id = :id';
+    $sql = 'SELECT p.id, p.nome, p.estoque, p.valor_unitario, p.id_fornecedor f.nome AS fornecedor FROM produtos p LEFT JOIN fornecedores f ON p.id_fornecedor = f.id WHERE p.id = :id';
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':id', $id);
     $stmt->execute();
@@ -22,12 +22,12 @@ class Produto {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
 
     if ($param) {
-      $sql = 'SELECT p.id, p.nome, p.estoque, p.valor_unitario, p.id_fornecedor, f.nome AS fornecedor FROM produtos p INNER JOIN fornecedores f ON p.id_fornecedor = f.id WHERE p.nome LIKE :param OR f.nome LIKE :param';
+      $sql = 'SELECT p.id, p.nome, p.estoque, p.valor_unitario, p.id_fornecedor, f.nome AS fornecedor FROM produtos p LEFT JOIN fornecedores f ON p.id_fornecedor = f.id WHERE p.nome LIKE :param OR f.nome LIKE :param';
       $stmt = $conn->prepare($sql);
       $stmt->bindValue(':param', '%'. $param .'%');
     }
     else {
-      $sql = 'SELECT p.id, p.nome, p.estoque, p.valor_unitario, p.id_fornecedor, f.nome AS fornecedor FROM produtos p INNER JOIN fornecedores f ON p.id_fornecedor = f.id';
+      $sql = 'SELECT p.id, p.nome, p.estoque, p.valor_unitario, p.id_fornecedor, f.nome AS fornecedor FROM produtos p LEFT JOIN fornecedores f ON p.id_fornecedor = f.id';
       $stmt = $conn->prepare($sql);
     }
     
