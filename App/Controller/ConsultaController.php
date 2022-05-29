@@ -16,6 +16,10 @@ class ConsultaController {
     }
   }
 
+  public function getdentista($id_dentista) {
+    return Consulta::getConsultasByDentista($id_dentista);
+  }
+
   public function send() {
     return Consulta::sendConsulta((array) json_decode(file_get_contents('php://input')));
   }
