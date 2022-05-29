@@ -12,6 +12,15 @@ class DentistaController {
     }
   }
 
+  public function getespecialidade($id_especialidade = null) {
+    if ($id_especialidade) {
+      return Dentista::getDentistasEspecialidade($id_especialidade);
+    }
+    else {
+      return Dentista::getDentistasEspecialidade();
+    }
+  }
+
   public function send() {
     return Dentista::sendDentista((array) json_decode(file_get_contents('php://input')));
   }

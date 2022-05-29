@@ -25,6 +25,29 @@ class Dentista {
     }
   }
 
+  public static function getDentistasEspecialidade($id_especialidade = null) {
+    $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+
+    if ($id_especialidade) {
+      $sql = "SELECT d.id, d.nome FROM dentistas d INNER JOIN atribuicoes a ON a.id_dentista = d.id WHERE d.ativo = '1' AND a.id_especialidade = :id_especialidade ORDER BY d.nome";
+      $stmt = $conn->prepare($sql);
+      $stmt->bindValue(':id_especialidade', $id_especialidade);
+    }
+    else {
+      $sql = "SELECT id, nome FROM dentistas WHERE ativo = '1' ORDER BY nome";
+      $stmt = $conn->prepare($sql);
+    }
+    
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    else {
+      throw new \Exception("Nenhum dentista encontrado.");
+    }
+  }
+
   public static function deleteDentista(int $id) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
     $sql = 'DELETE FROM dentistas WHERE id = :id';

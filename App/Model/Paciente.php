@@ -22,6 +22,22 @@ class Paciente {
     }
   }
 
+  public static function getDescontoConvenio($id_paciente, $id_procedimento) {
+    $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+    $sql = "SELECT cp.porcentagem FROM pacientes p INNER JOIN convenios c ON p.id_convenio = c.id INNER JOIN convenios_procedimentos cp ON cp.id_convenio = c.id WHERE p.id = :id_paciente AND cp.id_procedimento = :id_procedimento";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':id_paciente', $id_paciente);
+    $stmt->bindValue(':id_procedimento', $id_procedimento);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return $stmt->fetch(\PDO::FETCH_ASSOC)['porcentagem'];
+    }
+    else {
+      return 0;
+    }
+  }
+
   public static function getPacientes($param = null) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
 

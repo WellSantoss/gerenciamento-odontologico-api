@@ -1,19 +1,29 @@
 <?php
 namespace App\Model;
+use App\Model\Paciente;
 
 class Procedimento {
-  public static function getProcedimento(int $id) {
+  public static function getProcedimentosAtivos($id_paciente) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
-    $sql = 'SELECT p.ativo, p.id_especialidade, e.nome AS especialidade, p.procedimento, p.descricao, p.tempo, p.valor FROM procedimentos p LEFT JOIN especialidades e ON p.id_especialidade = e.id WHERE id = :id';
+    $sql = "SELECT id, id_especialidade, procedimento, valor, tempo FROM procedimentos WHERE ativo = '1'";
     $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id', $id);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-      return $stmt->fetch(\PDO::FETCH_ASSOC);
+      $procedimentos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+      
+      foreach ($procedimentos as $key => $procedimento) {
+        $desconto = Paciente::getDescontoConvenio($id_paciente, $procedimento['id']);
+        $valor = ((100 - $desconto) / 100) * $procedimento['valor'];
+
+        $procedimentos[$key]['desconto'] = number_format((float) $desconto, 2, '.', '');
+        $procedimentos[$key]['valor_descontado'] = number_format((float) $valor, 2, '.', '');
+      }
+
+      return $procedimentos;
     }
     else {
-      throw new \Exception("Procedimento não encontrado.");
+      throw new \Exception("Nenhum procedimento encontrado.");
     }
   }
 

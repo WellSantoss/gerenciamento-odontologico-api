@@ -3,14 +3,13 @@ namespace App\Controller;
 use App\Model\Procedimento;
 
 class ProcedimentoController {
-  public function get($param = null) {
+  public function getativos($id_paciente) {
+    return Procedimento::getProcedimentosAtivos($id_paciente);
+  }
+
+  public function getall($param = null) {
     if ($param) {
-      if (gettype($param) == 'integer') {
-        return Procedimento::getProcedimento($param);
-      }
-      else {
-        return Procedimento::getProcedimentos($param);
-      }
+      return Procedimento::getProcedimentos($param);
     }
     else {
       return Procedimento::getProcedimentos();
