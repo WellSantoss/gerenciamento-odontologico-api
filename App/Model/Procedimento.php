@@ -50,6 +50,21 @@ class Procedimento {
     }
   }
 
+  public static function getProcedimentosDentistas($id_dentista) {
+    $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+    $sql = 'SELECT p.id, p.procedimento FROM procedimentos p INNER JOIN especialidades e ON p.id_especialidade = e.id INNER JOIN atribuicoes a ON a.id_especialidade = e.id INNER JOIN dentistas d ON a.id_dentista = d.id WHERE d.id = :id_dentista';
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':id_dentista', $id_dentista);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    else {
+      throw new \Exception("Nenhum procedimento encontrado.");
+    }
+  }
+
   public static function deleteProcedimento(int $id) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
     $sql = 'DELETE FROM procedimentos WHERE id = :id';

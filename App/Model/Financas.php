@@ -71,6 +71,21 @@ class Financas {
     }
   }
 
+  public static function deleteFinancasByData($data) {
+    $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+    $sql = "DELETE FROM financas WHERE data = :data AND tipo = 'Pagamento de Consulta'";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':data', $data);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   public static function updateFinancas(array $data, int $id) {
     if ($data['operacao'] == 'Despesa' && $data['valor'] > 0) {
       $valor = - $data['valor'];
@@ -120,7 +135,7 @@ class Financas {
     $stmt->bindValue(':tipo', $data['tipo']);
     $stmt->bindValue(':valor', $valor);
     $stmt->bindValue(':data', str_replace('T', ' ', $data['data']));
-    $stmt->bindValue(':descricao', $data['descricao']);
+    $stmt->bindValue(':descricao', isset($data['descricao']) ? $data['descricao'] : null);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {

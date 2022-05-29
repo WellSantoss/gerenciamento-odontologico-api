@@ -16,6 +16,10 @@ class ProcedimentoController {
     }
   }
 
+  public function getdentista($id_dentista) {
+    return Procedimento::getProcedimentosDentistas($id_dentista);
+  }
+
   public function send() {
     return Procedimento::sendProcedimento((array) json_decode(file_get_contents('php://input')));
   }
