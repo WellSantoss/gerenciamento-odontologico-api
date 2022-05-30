@@ -29,7 +29,7 @@ $param = array_slice($url, 3);
 
 if ($method == 'login') {
   try {
-    $response = UsuarioController::login();;
+    $response = UsuarioController::login();
 
     http_response_code(200);
     echo json_encode(array('status' => 'success', 'data' => $response), JSON_UNESCAPED_UNICODE);

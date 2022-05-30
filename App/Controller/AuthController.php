@@ -7,6 +7,9 @@ use App\Model\Usuario;
 class AuthController {
   public static function gerarToken($id, $usuario) {
     $payload = [
+      'sub' => $id,
+      'iss' => 'dentalweb',
+      'iat' => time(),
       'id' => $id,
       'user' => $usuario
     ];
