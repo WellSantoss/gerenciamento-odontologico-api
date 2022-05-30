@@ -25,6 +25,10 @@ class PacienteController {
     return Paciente::sendPaciente((array) json_decode(file_get_contents('php://input')));
   }
 
+  public function verifica() {
+    return Paciente::verifica((array) json_decode(file_get_contents('php://input')));
+  }
+
   public function update($id) {
     return Paciente::updatePaciente((array) json_decode(file_get_contents('php://input')), $id);
   }
