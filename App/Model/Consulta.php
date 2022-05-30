@@ -56,6 +56,21 @@ class Consulta {
       throw new \Exception("Nenhuma consulta encontrada.");
     }
   }
+  
+  public static function getConsultasByPaciente($id_paciente) {
+    $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
+    $sql = 'SELECT c.id, u.nome AS usuario, c.id_dentista, d.cor, d.nome AS dentista, p.nome AS paciente, c.data_pagamento, c.data, c.valor, c.pago, c.status FROM consultas c LEFT JOIN dentistas d ON c.id_dentista = d.id LEFT JOIN pacientes p ON c.id_paciente = p.id LEFT JOIN usuarios u ON c.id_usuario = u.id WHERE c.id_paciente = :id_paciente ORDER BY c.data DESC';
+    $stmt = $conn->prepare($sql);    
+    $stmt->bindValue(':id_paciente', $id_paciente);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    else {
+      throw new \Exception("Nenhuma consulta encontrada.");
+    }
+  }
 
   public static function deleteConsulta(int $id) {
     $conn = new \PDO(DBDRIVE.': host='.DBHOST.'; dbname='.DBNAME, DBUSER, DBPASS);
